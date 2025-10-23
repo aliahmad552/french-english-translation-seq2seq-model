@@ -1,3 +1,7 @@
+import tensorflow as tf
+from tensorflow.keras.layers import Embedding,LSTM,Dense
+from model.attention import BahdanauAttention
+
 class Decoder(tf.keras.Model):
   def __init__(self,vocab_size,embedding_dim,dec_units,batch_size):
     super(Decoder,self).__init__()
