@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French → English Translator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Neural Machine Translator 🇫🇷 → 🇬🇧</h1>
+        <div class="translator-box">
+            <div class="input-section">
+                <h3>French Text</h3>
+                <textarea id="inputText" placeholder="Entrez le texte français ici..."></textarea>
+            </div>
+
+            <div class="arrow">⇄</div>
+
+            <div class="output-section">
+                <h3>English Translation</h3>
+                <div id="outputText" class="output-box">Translation will appear here...</div>
+            </div>
+        </div>
+
+        <button id="translateBtn">Translate</button>
+    </div>
+
+    <footer>
+        <p>Powered by <strong>FastAPI</strong> & <strong>TensorFlow</strong> | Developed by Ali Ahmad ⚡</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
