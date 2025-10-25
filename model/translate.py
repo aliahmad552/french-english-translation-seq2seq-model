@@ -1,6 +1,9 @@
 import tensorflow as tf
 import numpy as np
+from model.encoder import Encoder
+from model.decoder import Decoder
 import re
+
 
 def preprocess_sentence(sentence):
     sentence = sentence.lower().strip()
@@ -8,23 +11,22 @@ def preprocess_sentence(sentence):
     sentence = re.sub(r'[" "]+', " ", sentence)
     sentence = re.sub(r"[^a-zA-Z?.!,¿]+", " ", sentence)
     sentence = sentence.strip()
-    sentence = '<start> ' + sentence + ' <end>'
     return sentence
 
-def translate_sentence(sentence, encoder, decoder, fr_tokenizer, eng_tokenizer, max_length_inp=71, max_length_targ=71):
+def translate_sentence(sentence, encoder, decoder, fr_tokenizer, eng_tokenizer, max_length_inp=69, max_length_targ=68):
     sentence = preprocess_sentence(sentence)
     inputs = [fr_tokenizer.word_index.get(w, fr_tokenizer.word_index.get('<unk>', 1)) for w in sentence.split(' ')]
     inputs = tf.keras.preprocessing.sequence.pad_sequences([inputs], maxlen=max_length_inp, padding='post')
     inputs = tf.convert_to_tensor(inputs)
 
     result = ''
-    hidden = encoder.initialize_hidden_state()
-    enc_out, enc_h, enc_c = encoder(inputs, hidden)
+    hidden = Encoder.initial_hidden_state()
+    enc_out, enc_h, enc_c = Encoder(inputs, hidden)
     dec_hidden = (enc_h, enc_c)
     dec_input = tf.expand_dims([eng_tokenizer.word_index['<start>']], 0)
 
     for _ in range(max_length_targ):
-        predictions, dec_hidden, _ = decoder(dec_input, dec_hidden, enc_out)
+        predictions, dec_hidden, _ = Decoder(dec_input, dec_hidden, enc_out)
         predicted_id = tf.argmax(predictions[0]).numpy()
         predicted_word = eng_tokenizer.index_word.get(predicted_id, '')
         if predicted_word == '<end>':
