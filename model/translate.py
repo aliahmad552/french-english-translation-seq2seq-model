@@ -1,19 +1,26 @@
 import tensorflow as tf
-import numpy as np
 from model.encoder import Encoder
+import unicodedata
 from model.decoder import Decoder
 import re
 
+def unicode_to_ascii(s):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', s)
+        if unicodedata.category(c) != 'Mn'
+    )
 
 def preprocess_sentence(sentence):
     sentence = sentence.lower().strip()
+    sentence = unicode_to_ascii(sentence)
     sentence = re.sub(r"([?.!,¿])", r" \1 ", sentence)
     sentence = re.sub(r'[" "]+', " ", sentence)
     sentence = re.sub(r"[^a-zA-Z?.!,¿]+", " ", sentence)
     sentence = sentence.strip()
     return sentence
 
-def translate_sentence(sentence, encoder, decoder, fr_tokenizer, eng_tokenizer, max_length_inp=69, max_length_targ=68):
+def translate_sentence(sentence, Encoder, Decoder, fr_tokenizer, eng_tokenizer, max_length_inp=69, max_length_targ=68):
+    
     sentence = preprocess_sentence(sentence)
     inputs = [fr_tokenizer.word_index.get(w, fr_tokenizer.word_index.get('<unk>', 1)) for w in sentence.split(' ')]
     inputs = tf.keras.preprocessing.sequence.pad_sequences([inputs], maxlen=max_length_inp, padding='post')
