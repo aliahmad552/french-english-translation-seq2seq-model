@@ -1,4 +1,6 @@
-from tensorflow.keras.layers import Layer
+import tensorflow as tf
+from tensorflow.keras.layers import Layer,Dense
+import tensorflow as tf
 
 class BahdanauAttention(tf.keras.Model):
   def __init__(self,units):
