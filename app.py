@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import tensorflow as tf
+from fastapi.staticfiles import StaticFiles
 import pickle
 from model.translate import translate_sentence
 from model.encoder import Encoder
 from model.decoder import Decoder
 
 app = FastAPI(title="Neural Machine Translation API")
+
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 # Load tokenizers
 with open("artifacts/fr_tokenizer.pkl", "rb") as f:
