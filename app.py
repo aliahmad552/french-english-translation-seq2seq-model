@@ -23,6 +23,19 @@ BATCH_SIZE = 1
 encoder = Encoder(vocab_inp_size, embedding_dim, units, BATCH_SIZE)
 decoder = Decoder(vocab_tar_size, embedding_dim, units, BATCH_SIZE)
 
+# This step is necessary to build the encoder for forward pass
+# --- Build encoder and decoder ---
+sample_input = tf.zeros((1, 69))  # 71 is max_length of your French sentence
+sample_hidden = [tf.zeros((1, 512)), tf.zeros((1, 512))]  # hidden + cell for LSTM
+
+# Call encoder once to build it
+enc_output, enc_h, enc_c = encoder(sample_input, sample_hidden)
+
+# Call decoder once to build it
+dec_input = tf.zeros((1, 1))  # <start> token
+dec_hidden = (enc_h, enc_c)
+_ = decoder(dec_input, dec_hidden, enc_output)
+
 encoder.load_weights("artifacts/encoder.weights.h5")
 decoder.load_weights("artifacts/decoder.weights.h5")
 
