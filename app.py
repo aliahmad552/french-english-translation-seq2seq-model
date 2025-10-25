@@ -3,18 +3,16 @@ from pydantic import BaseModel
 import tensorflow as tf
 import pickle
 from model.translate import translate_sentence
+from model.encoder import Encoder
+from model.decoder import Decoder
 
 app = FastAPI(title="Neural Machine Translation API")
 
 # Load tokenizers
-with open("fr_tokenizer.pkl", "rb") as f:
+with open("artifacts/fr_tokenizer.pkl", "rb") as f:
     fr_tokenizer = pickle.load(f)
-with open("eng_tokenizer.pkl", "rb") as f:
+with open("artifacts/eng_tokenizer.pkl", "rb") as f:
     eng_tokenizer = pickle.load(f)
-
-# Load encoder and decoder
-from model.encoder import Encoder
-from model.decoder import Decoder
 
 embedding_dim = 256
 units = 512
@@ -25,8 +23,8 @@ BATCH_SIZE = 1
 encoder = Encoder(vocab_inp_size, embedding_dim, units, BATCH_SIZE)
 decoder = Decoder(vocab_tar_size, embedding_dim, units, BATCH_SIZE)
 
-encoder.load_weights("encoder.h5")
-decoder.load_weights("decoder.h5")
+encoder.load_weights("artifacts/encoder.weights.h5")
+decoder.load_weights("artifacts/decoder.weights.h5")
 
 class TranslationInput(BaseModel):
     text: str
